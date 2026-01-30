@@ -1,9 +1,10 @@
 import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Prisma } from '@prisma/client';
 
 export class CreateClientDto {
   @IsNotEmpty()
   @IsString()
-  nomeCompleto: string;
+  nomeCompleto!: string;
 
   @IsOptional()
   @IsString()
@@ -22,7 +23,7 @@ export class CreateClientDto {
   cpfCnpj?: string;
 
   @IsOptional()
-  endereco?: Record<string, unknown>;
+  endereco?: Prisma.InputJsonValue;
 
   @IsOptional()
   @IsString()

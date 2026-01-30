@@ -11,6 +11,13 @@ export class UsersService {
     return this.prisma.user.create({ data });
   }
 
+  async findByEmailGlobal(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+      include: { company: { select: { id: true, nomeFantasia: true } } },
+    });
+  }
+
   async findByEmail(companyId: string, email: string) {
     return this.prisma.user.findFirst({ where: { companyId, email } });
   }

@@ -1,0 +1,86 @@
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +24ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +4ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +7ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCompanyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mClientsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mVehiclesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mServicesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mServicePackagesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppointmentsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWorkOrdersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:26 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +34ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login-simple, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUsersController {/users}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCompanyController {/companies}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/companies, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/companies, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/companies/me, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/companies/:id, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mClientsController {/clients}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/clients, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/clients, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/clients/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/clients/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mVehiclesController {/vehicles}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/vehicles, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/vehicles, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/vehicles/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/vehicles/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mServicesController {/services}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/services, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/services, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/services/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/services/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mServicePackagesController {/service-packages}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/service-packages, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/service-packages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/service-packages/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/service-packages/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppointmentsController {/appointments}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/appointments, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/appointments, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/appointments/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/appointments/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWorkOrdersController {/work-orders}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/work-orders, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/work-orders, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/work-orders/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/work-orders/:id, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/dashboard}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/dashboard/overview, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27548  - [39m30/01/2026, 17:18:27 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +189ms[39m
+[31m[Nest] 27548  - [39m30/01/2026, 17:24:04 [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39m[31m
+Invalid `this.prisma.vehicle.create()` invocation in
+C:\Users\Tina\Documents\prog\AlvesGestao\backend\dist\vehicles\vehicles.service.js:20:36
+
+  17     this.prisma = prisma;
+  18 }
+  19 create(companyId, dto) {
+→ 20     return this.prisma.vehicle.create(
+Unique constraint failed on the fields: (`placa`)[39m
+PrismaClientKnownRequestError: 
+Invalid `this.prisma.vehicle.create()` invocation in
+C:\Users\Tina\Documents\prog\AlvesGestao\backend\dist\vehicles\vehicles.service.js:20:36
+
+  17     this.prisma = prisma;
+  18 }
+  19 create(companyId, dto) {
+→ 20     return this.prisma.vehicle.create(
+Unique constraint failed on the fields: (`placa`)
+    at $n.handleRequestError (C:\Users\Tina\Documents\prog\AlvesGestao\backend\node_modules\@prisma\client\runtime\library.js:121:7315)
+    at $n.handleAndLogRequestError (C:\Users\Tina\Documents\prog\AlvesGestao\backend\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\Tina\Documents\prog\AlvesGestao\backend\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (C:\Users\Tina\Documents\prog\AlvesGestao\backend\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async C:\Users\Tina\Documents\prog\AlvesGestao\backend\node_modules\@nestjs\core\router\router-execution-context.js:46:28
+    at async C:\Users\Tina\Documents\prog\AlvesGestao\backend\node_modules\@nestjs\core\router\router-proxy.js:9:17

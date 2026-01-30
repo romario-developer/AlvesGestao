@@ -4,7 +4,7 @@ import { Type } from 'class-transformer';
 class PackageItemDto {
   @IsNotEmpty()
   @IsString()
-  serviceId: string;
+  serviceId!: string;
 
   @IsOptional()
   @IsNumber()
@@ -14,14 +14,14 @@ class PackageItemDto {
 export class CreateServicePackageDto {
   @IsNotEmpty()
   @IsString()
-  nome: string;
+  nome!: string;
 
   @IsOptional()
   @IsString()
   descricao?: string;
 
   @IsNumber({ maxDecimalPlaces: 2 })
-  precoBase: number;
+  precoBase!: number;
 
   @IsOptional()
   @IsArray()

@@ -4,21 +4,21 @@ import { AppointmentStatus } from '@prisma/client';
 export class CreateAppointmentDto {
   @IsNotEmpty()
   @IsString()
-  clientId: string;
+  clientId!: string;
 
   @IsNotEmpty()
   @IsString()
-  vehicleId: string;
+  vehicleId!: string;
 
   @IsOptional()
   @IsString()
   serviceId?: string;
 
   @IsDateString()
-  dataHoraInicio: string;
+  dataHoraInicio!: string;
 
   @IsDateString()
-  dataHoraFim: string;
+  dataHoraFim!: string;
 
   @IsOptional()
   @IsEnum(AppointmentStatus)

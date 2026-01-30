@@ -1,9 +1,10 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Prisma } from '@prisma/client';
 
 export class CreateCompanyDto {
   @IsNotEmpty()
   @IsString()
-  nomeFantasia: string;
+  nomeFantasia!: string;
 
   @IsOptional()
   @IsString()
@@ -26,13 +27,13 @@ export class CreateCompanyDto {
   email?: string;
 
   @IsOptional()
-  endereco?: Record<string, unknown>;
+  endereco?: Prisma.InputJsonValue;
 
   @IsOptional()
-  coresTema?: Record<string, unknown>;
+  coresTema?: Prisma.InputJsonValue;
 
   @IsOptional()
-  nfeConfig?: Record<string, unknown>;
+  nfeConfig?: Prisma.InputJsonValue;
 
   @IsOptional()
   @IsString()

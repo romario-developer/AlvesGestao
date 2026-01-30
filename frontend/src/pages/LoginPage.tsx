@@ -1,12 +1,11 @@
 import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuthStore } from '../lib/auth-store';
 
 export function LoginPage() {
   const setAuth = useAuthStore((s) => s.setAuth);
   const navigate = useNavigate();
-  const [companyId, setCompanyId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -17,11 +16,11 @@ export function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const { data } = await api.post('/auth/login', { companyId, email, password });
+      const { data } = await api.post('/auth/login-simple', { email, password });
       setAuth({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
-        companyId,
+        companyId: data.user.companyId ?? data.company?.id ?? null,
         userName: data.user.nome,
       });
       navigate('/');
@@ -44,10 +43,6 @@ export function LoginPage() {
         </div>
         <form className="space-y-3" onSubmit={submit}>
           <div>
-            <label className="text-sm text-slate-200">Empresa (companyId)</label>
-            <input className="input mt-1" value={companyId} onChange={(e) => setCompanyId(e.target.value)} required />
-          </div>
-          <div>
             <label className="text-sm text-slate-200">E-mail</label>
             <input className="input mt-1" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
@@ -59,6 +54,11 @@ export function LoginPage() {
           <button disabled={loading} className="btn btn-primary w-full" type="submit">
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
+          <p className="text-sm text-center text-slate-400">
+            <Link to="/register" className="text-emerald-400">
+              Criar conta
+            </Link>
+          </p>
         </form>
       </div>
     </div>

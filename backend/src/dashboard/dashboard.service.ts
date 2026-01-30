@@ -254,7 +254,7 @@ export class DashboardService {
     return {
       user: { id: userId, nome: userName, role },
       company: {
-        id: company?.id ?? user.companyId,
+        id: company?.id ?? companyId,
         nomeFantasia: company?.nomeFantasia ?? '--',
         plano: company?.plano ?? null,
         createdAt: company?.createdAt?.toISOString?.() ?? new Date(0).toISOString(),

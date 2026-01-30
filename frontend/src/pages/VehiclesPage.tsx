@@ -18,9 +18,19 @@ export function VehiclesPage() {
   const [search, setSearch] = useState('');
   const { data, isLoading, refetch } = useVehicles(search);
   const { data: clients } = useClients('');
-  const { register, handleSubmit, reset } = useForm<VehicleForm>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<VehicleForm>();
+  const watchedClientId = watch('clientId');
 
   const onSubmit = async (values: VehicleForm) => {
+    if (!values.clientId) {
+      return;
+    }
     await api.post('/vehicles', {
       ...values,
       ano: values.ano ? Number(values.ano) : undefined,
@@ -50,6 +60,9 @@ export function VehiclesPage() {
               </option>
             ))}
           </select>
+          {errors.clientId && (
+            <p className="text-xs text-red-400">Selecione um cliente antes de salvar o veículo.</p>
+          )}
           <input className="input" placeholder="Placa" {...register('placa', { required: true })} />
           <input className="input" placeholder="Tipo (carro/moto)" {...register('tipo', { required: true })} />
           <input className="input" placeholder="Marca" {...register('marca', { required: true })} />
@@ -57,7 +70,11 @@ export function VehiclesPage() {
           <input className="input" placeholder="Ano" type="number" {...register('ano', { valueAsNumber: true })} />
           <input className="input" placeholder="Cor" {...register('cor')} />
           <div className="md:col-span-6 flex justify-end">
-            <button className="btn btn-primary" type="submit">
+            <button
+              className="btn btn-primary"
+              type="submit"
+              disabled={!watchedClientId || !!errors.clientId}
+            >
               Salvar
             </button>
           </div>

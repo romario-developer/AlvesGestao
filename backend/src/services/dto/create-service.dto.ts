@@ -3,7 +3,7 @@ import { IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min } fro
 export class CreateServiceDto {
   @IsNotEmpty()
   @IsString()
-  nome: string;
+  nome!: string;
 
   @IsOptional()
   @IsString()
@@ -19,7 +19,7 @@ export class CreateServiceDto {
   duracaoMinutos?: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
-  precoBase: number;
+  precoBase!: number;
 
   @IsOptional()
   @IsBoolean()

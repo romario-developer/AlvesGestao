@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import api from '../lib/api';
 
@@ -25,29 +25,45 @@ export function VehicleCreateModal({ open, clientId, clientName, onSuccess, onCl
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { register, handleSubmit, reset } = useForm<VehiclePayload>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<VehiclePayload>({
     defaultValues: {
-      clientId,
+      clientId: clientId ?? '',
       placa: '',
       tipo: '',
       marca: '',
       modelo: '',
     },
   });
+  const watchedClientId = watch('clientId');
+
+  useEffect(() => {
+    setValue('clientId', clientId ?? '');
+  }, [clientId, setValue]);
 
   const submit = handleSubmit(async (values) => {
     setErrorMessage(null);
     setLoading(true);
     try {
+      if (!values.clientId) {
+        setErrorMessage('Selecione um cliente antes de salvar o veículo.');
+        setLoading(false);
+        return;
+      }
       await api.post('/vehicles', {
-        clientId,
         ...values,
         ano: values.ano ? Number(values.ano) : undefined,
       });
       queryClient.invalidateQueries({ queryKey: ['vehicles'] });
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       reset({
-        clientId,
+        clientId: clientId ?? '',
         placa: '',
         tipo: '',
         marca: '',
@@ -87,6 +103,15 @@ export function VehicleCreateModal({ open, clientId, clientName, onSuccess, onCl
             className="text-slate-400 hover:text-white text-sm"
             onClick={() => {
               setErrorMessage(null);
+              reset({
+                clientId: clientId ?? '',
+                placa: '',
+                tipo: '',
+                marca: '',
+                modelo: '',
+                ano: undefined,
+                cor: '',
+              });
               onClose();
             }}
           >
@@ -94,15 +119,23 @@ export function VehicleCreateModal({ open, clientId, clientName, onSuccess, onCl
           </button>
         </header>
         <form className="space-y-3" onSubmit={submit}>
+          <input type="hidden" {...register('clientId', { required: true })} />
           <input className="input" placeholder="Placa" {...register('placa', { required: true })} />
           <input className="input" placeholder="Tipo (carro/moto)" {...register('tipo', { required: true })} />
           <input className="input" placeholder="Marca" {...register('marca', { required: true })} />
           <input className="input" placeholder="Modelo" {...register('modelo', { required: true })} />
           <input className="input" placeholder="Ano" type="number" {...register('ano')} />
           <input className="input" placeholder="Cor" {...register('cor')} />
+          {errors.clientId && (
+            <p className="text-sm text-red-400">Selecione um cliente antes de salvar o veículo.</p>
+          )}
           {errorMessage && <p className="text-sm text-red-400">{errorMessage}</p>}
           <div className="flex justify-end">
-            <button className="btn btn-primary" type="submit" disabled={loading}>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              disabled={loading || !watchedClientId}
+            >
               {loading ? 'Salvando...' : 'Salvar veículo'}
             </button>
           </div>

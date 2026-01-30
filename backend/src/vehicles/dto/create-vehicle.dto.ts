@@ -3,23 +3,23 @@ import { IsNotEmpty, IsOptional, IsString, IsInt } from 'class-validator';
 export class CreateVehicleDto {
   @IsNotEmpty()
   @IsString()
-  clientId: string;
+  clientId!: string;
 
   @IsNotEmpty()
   @IsString()
-  tipo: string;
+  tipo!: string;
 
   @IsNotEmpty()
   @IsString()
-  placa: string;
+  placa!: string;
 
   @IsNotEmpty()
   @IsString()
-  marca: string;
+  marca!: string;
 
   @IsNotEmpty()
   @IsString()
-  modelo: string;
+  modelo!: string;
 
   @IsOptional()
   @IsInt()

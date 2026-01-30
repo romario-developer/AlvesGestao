@@ -14,10 +14,10 @@ import { PaymentMethod, WorkOrderStatus } from '@prisma/client';
 export class WorkOrderItemDto {
   @IsNotEmpty()
   @IsString()
-  serviceId: string;
+  serviceId!: string;
 
   @IsNumber({ maxDecimalPlaces: 2 })
-  precoUnitario: number;
+  precoUnitario!: number;
 
   @IsOptional()
   @IsNumber({ maxDecimalPlaces: 2 })
@@ -34,10 +34,10 @@ export class WorkOrderItemDto {
 
 export class PaymentDto {
   @IsEnum(PaymentMethod)
-  metodo: PaymentMethod;
+  metodo!: PaymentMethod;
 
   @IsNumber({ maxDecimalPlaces: 2 })
-  valor: number;
+  valor!: number;
 
   @IsOptional()
   @IsDateString()
@@ -55,17 +55,17 @@ export class PaymentDto {
 export class ReceivableProjectionDto {
   @IsNotEmpty()
   @IsDateString()
-  dataPrevista: string;
+  dataPrevista!: string;
 }
 
 export class CreateWorkOrderDto {
   @IsNotEmpty()
   @IsString()
-  clientId: string;
+  clientId!: string;
 
   @IsNotEmpty()
   @IsString()
-  vehicleId: string;
+  vehicleId!: string;
 
   @IsOptional()
   @IsEnum(WorkOrderStatus)
@@ -82,7 +82,7 @@ export class CreateWorkOrderDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => WorkOrderItemDto)
-  items: WorkOrderItemDto[];
+  items!: WorkOrderItemDto[];
 
   @IsOptional()
   @IsArray()

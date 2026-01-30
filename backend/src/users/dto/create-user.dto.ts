@@ -4,14 +4,14 @@ import { UserRole } from '@prisma/client';
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  companyId: string;
+  companyId!: string;
 
   @IsNotEmpty()
   @IsString()
-  nome: string;
+  nome!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsString()
@@ -22,9 +22,9 @@ export class CreateUserDto {
   whatsapp?: string;
 
   @IsEnum(UserRole)
-  role: UserRole;
+  role!: UserRole;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  password!: string;
 }
