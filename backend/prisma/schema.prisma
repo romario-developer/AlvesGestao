@@ -1,0 +1,399 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  OPERATOR
+}
+
+enum AppointmentStatus {
+  AGENDADO
+  CONFIRMADO
+  EM_ANDAMENTO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum WorkOrderStatus {
+  ORCAMENTO
+  ABERTO
+  EM_EXECUCAO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum PaymentMethod {
+  PIX
+  DEBITO
+  CREDITO
+  DINHEIRO
+  BOLETO
+  OUTROS
+}
+
+enum FollowUpStatus {
+  PENDENTE
+  EM_CONTATO
+  CONCLUIDO
+  NAO_RESPONDEU
+}
+
+model Company {
+  id             String    @id @default(cuid())
+  nomeFantasia   String
+  razaoSocial    String?
+  cnpj           String?   @unique
+  telefone       String?
+  whatsapp       String?
+  email          String?
+  endereco       Json?
+  logoUrl        String?
+  coresTema      Json?
+  nfeConfig      Json?
+  plano          String?   // nome do plano/assinatura
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  users          User[]
+  clients        Client[]
+  vehicles       Vehicle[]
+  services       Service[]
+  servicePackage ServicePackage[]
+  appointments   Appointment[]
+  spaces         Space[]
+  workOrders     WorkOrder[]
+  followUps      FollowUp[]
+  notifications  Notification[]
+  payables       Payable[]
+  receivables    Receivable[]
+  payments       Payment[]
+  photoChecklists PhotoChecklist[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  nome      String
+  email     String   @unique
+  telefone  String?
+  whatsapp  String?
+  role      UserRole
+  password  String
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointmentsResponsavel Appointment[] @relation("AppointmentResponsavel")
+  workOrdersResponsavel   WorkOrder[]   @relation("WorkOrderResponsavel")
+  notifications           Notification[]
+}
+
+model Client {
+  id           String    @id @default(cuid())
+  companyId    String
+  company      Company   @relation(fields: [companyId], references: [id])
+  nomeCompleto String
+  whatsapp     String?
+  telefone     String?
+  email        String?
+  cpfCnpj      String?
+  endereco     Json?
+  observacoes  String?
+  tags         String[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  vehicles     Vehicle[]
+  workOrders   WorkOrder[]
+  receivables  Receivable[]
+  followUps    FollowUp[]
+  appointments Appointment[]
+
+  @@index([companyId], map: "idx_client_company")
+}
+
+model Vehicle {
+  id         String   @id @default(cuid())
+  companyId  String
+  company    Company  @relation(fields: [companyId], references: [id])
+  clientId   String
+  client     Client   @relation(fields: [clientId], references: [id])
+  tipo       String
+  placa      String   @unique
+  marca      String
+  modelo     String
+  ano        Int?
+  cor        String?
+  chassi     String?
+  observacoes String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  appointments Appointment[]
+  workOrders   WorkOrder[]
+
+  @@index([companyId], map: "idx_vehicle_company")
+  @@index([clientId], map: "idx_vehicle_client")
+}
+
+model Service {
+  id             String    @id @default(cuid())
+  companyId      String
+  company        Company   @relation(fields: [companyId], references: [id])
+  nome           String
+  descricao      String?
+  categoria      String?
+  duracaoMinutos Int?
+  precoBase      Decimal   @db.Decimal(10, 2)
+  ativo          Boolean   @default(true)
+  geraPosVenda   Boolean   @default(false)
+  diasFollowUp   Int?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  packages       ServicePackageItem[]
+  workOrderItems WorkOrderItem[]
+  appointments   Appointment[]
+  followUps      FollowUp[]
+}
+
+model ServicePackage {
+  id        String                 @id @default(cuid())
+  companyId String
+  company   Company                @relation(fields: [companyId], references: [id])
+  nome      String
+  descricao String?
+  precoBase Decimal                @db.Decimal(10, 2)
+  ativo     Boolean                @default(true)
+  items     ServicePackageItem[]
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+}
+
+model ServicePackageItem {
+  id              String          @id @default(cuid())
+  servicePackageId String
+  servicePackage   ServicePackage @relation(fields: [servicePackageId], references: [id])
+  serviceId        String
+  service          Service        @relation(fields: [serviceId], references: [id])
+  quantidade       Int            @default(1)
+}
+
+model Appointment {
+  id             String            @id @default(cuid())
+  companyId      String
+  company        Company           @relation(fields: [companyId], references: [id])
+  clientId       String
+  client         Client            @relation(fields: [clientId], references: [id])
+  vehicleId      String
+  vehicle        Vehicle           @relation(fields: [vehicleId], references: [id])
+  serviceId      String?
+  service        Service?          @relation(fields: [serviceId], references: [id])
+  dataHoraInicio DateTime
+  dataHoraFim    DateTime
+  status         AppointmentStatus
+  origem         String?
+  observacoes    String?
+  responsavelId  String?
+  responsavel    User?             @relation("AppointmentResponsavel", fields: [responsavelId], references: [id])
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  workOrder WorkOrder? @relation("AppointmentWorkOrder")
+  checklists PhotoChecklist[] @relation("AppointmentChecklist")
+
+  @@index([companyId], map: "idx_appointment_company")
+  @@index([clientId], map: "idx_appointment_client")
+  @@index([vehicleId], map: "idx_appointment_vehicle")
+}
+
+model Space {
+  id         String             @id @default(cuid())
+  companyId  String
+  company    Company            @relation(fields: [companyId], references: [id])
+  nome       String
+  tipo       String
+  status     String             @default("disponivel")
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  allocations SpaceAllocation[]
+
+  @@index([companyId], map: "idx_space_company")
+}
+
+model SpaceAllocation {
+  id         String     @id @default(cuid())
+  spaceId    String
+  space      Space      @relation(fields: [spaceId], references: [id])
+  workOrderId String
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id])
+  inicio     DateTime
+  fim        DateTime
+
+  @@index([spaceId], map: "idx_spaceallocation_space")
+  @@index([workOrderId], map: "idx_spaceallocation_workorder")
+}
+
+model WorkOrder {
+  id               String         @id @default(cuid())
+  companyId        String
+  company          Company        @relation(fields: [companyId], references: [id])
+  numeroSequencial Int
+  clientId         String
+  client           Client         @relation(fields: [clientId], references: [id])
+  vehicleId        String
+  vehicle          Vehicle        @relation(fields: [vehicleId], references: [id])
+  status           WorkOrderStatus
+  totalBruto       Decimal        @db.Decimal(10, 2)
+  descontoTotal    Decimal        @db.Decimal(10, 2) @default(0)
+  totalLiquido     Decimal        @db.Decimal(10, 2)
+  dataAbertura     DateTime       @default(now())
+  dataConclusao    DateTime?
+  formaRecebimento String?
+  responsavelId    String?
+  responsavel      User?          @relation("WorkOrderResponsavel", fields: [responsavelId], references: [id])
+  agendamentoId    String? @unique
+  agendamento      Appointment?   @relation("AppointmentWorkOrder", fields: [agendamentoId], references: [id])
+
+  items       WorkOrderItem[]
+  payments    Payment[]
+  followUps   FollowUp[]
+  allocations SpaceAllocation[]
+  receivables Receivable[]
+  checklist   PhotoChecklist? @relation("WorkOrderChecklist")
+
+  @@index([companyId], map: "idx_workorder_company")
+  @@index([clientId], map: "idx_workorder_client")
+  @@index([vehicleId], map: "idx_workorder_vehicle")
+}
+
+model WorkOrderItem {
+  id           String   @id @default(cuid())
+  workOrderId  String
+  workOrder    WorkOrder @relation(fields: [workOrderId], references: [id])
+  serviceId    String
+  service      Service   @relation(fields: [serviceId], references: [id])
+  quantidade   Int       @default(1)
+  precoUnitario Decimal  @db.Decimal(10, 2)
+  desconto     Decimal   @db.Decimal(10, 2) @default(0)
+  acrescimo    Decimal   @db.Decimal(10, 2) @default(0)
+}
+
+model Payment {
+  id           String        @id @default(cuid())
+  workOrderId  String
+  workOrder    WorkOrder     @relation(fields: [workOrderId], references: [id])
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id])
+  metodo       PaymentMethod
+  valor        Decimal       @db.Decimal(10, 2)
+  dataPagamento DateTime     @default(now())
+  numeroParcela Int?
+  totalParcelas Int?
+
+  @@index([companyId], map: "idx_payment_company")
+  @@index([workOrderId], map: "idx_payment_workorder")
+}
+
+model Payable {
+  id            String   @id @default(cuid())
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id])
+  descricao     String
+  categoria     String
+  valorPrevisto Decimal  @db.Decimal(10, 2)
+  valorPago     Decimal? @db.Decimal(10, 2)
+  dataVencimento DateTime
+  dataPagamento  DateTime?
+  fornecedor    String?
+  status        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([companyId], map: "idx_payable_company")
+}
+
+model Receivable {
+  id              String    @id @default(cuid())
+  companyId       String
+  company         Company   @relation(fields: [companyId], references: [id])
+  clientId        String?
+  client          Client?   @relation(fields: [clientId], references: [id])
+  workOrderId     String?
+  workOrder       WorkOrder? @relation(fields: [workOrderId], references: [id])
+  valorPrevisto   Decimal   @db.Decimal(10, 2)
+  dataPrevista    DateTime
+  valorRecebido   Decimal?  @db.Decimal(10, 2)
+  dataRecebimento DateTime?
+  status          String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([companyId], map: "idx_receivable_company")
+  @@index([clientId], map: "idx_receivable_client")
+  @@index([workOrderId], map: "idx_receivable_workorder")
+}
+
+model FollowUp {
+  id           String         @id @default(cuid())
+  companyId    String
+  company      Company        @relation(fields: [companyId], references: [id])
+  workOrderId  String
+  workOrder    WorkOrder      @relation(fields: [workOrderId], references: [id])
+  clientId     String
+  client       Client         @relation(fields: [clientId], references: [id])
+  serviceId    String?
+  service      Service?       @relation(fields: [serviceId], references: [id])
+  dataContato  DateTime
+  status       FollowUpStatus @default(PENDENTE)
+  observacoes  String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([companyId], map: "idx_followup_company")
+  @@index([clientId], map: "idx_followup_client")
+  @@index([workOrderId], map: "idx_followup_workorder")
+}
+
+model PhotoChecklist {
+  id                  String   @id @default(cuid())
+  companyId           String
+  company             Company  @relation(fields: [companyId], references: [id])
+  workOrderId         String?  @unique
+  workOrder           WorkOrder? @relation("WorkOrderChecklist", fields: [workOrderId], references: [id])
+  agendamentoId       String?  @unique
+  agendamento         Appointment? @relation("AppointmentChecklist", fields: [agendamentoId], references: [id])
+  dataHoraCheckin     DateTime @default(now())
+  observacoesCliente  String?
+  observacoesAtendente String?
+  fotos               Json?
+
+  @@index([companyId], map: "idx_photocheck_company")
+  @@index([workOrderId], map: "idx_photocheck_workorder")
+  @@index([agendamentoId], map: "idx_photocheck_appointment")
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  companyId  String
+  company    Company  @relation(fields: [companyId], references: [id])
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  tipo       String
+  conteudo   String
+  lida       Boolean  @default(false)
+  referencia Json?
+  createdAt  DateTime @default(now())
+
+  @@index([companyId], map: "idx_notification_company")
+  @@index([userId], map: "idx_notification_user")
+}
