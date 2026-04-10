@@ -1,6 +1,15 @@
+"use client";
+
+import { useState } from "react";
+
 export default function Home() {
+  // Estado para controlar qual serviço foi selecionado. Se for null, o modal fica fechado.
+  const [servicoSelecionado, setServicoSelecionado] = useState<{nome: string, preco: number} | null>(null);
+
+  const fecharModal = () => setServicoSelecionado(null);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative">
       {/* Cabeçalho da Página */}
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900">Painel Rápido</h1>
@@ -26,7 +35,10 @@ export default function Home() {
                 <li className="flex gap-2"><span>⏱️</span> Rápida (20–30 min)</li>
               </ul>
             </div>
-            <button className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-3 rounded-lg transition-colors">
+            <button 
+              onClick={() => setServicoSelecionado({ nome: "Lavagem Simples (Moto)", preco: 25 })}
+              className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-3 rounded-lg transition-colors"
+            >
               Abrir OS
             </button>
           </div>
@@ -45,7 +57,10 @@ export default function Home() {
                 <li className="flex gap-2"><span>⭐</span> Melhor custo-benefício</li>
               </ul>
             </div>
-            <button className="w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-bold py-3 rounded-lg transition-colors">
+            <button 
+              onClick={() => setServicoSelecionado({ nome: "Lavagem Completa (Moto)", preco: 35 })}
+              className="w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-bold py-3 rounded-lg transition-colors"
+            >
               Abrir OS
             </button>
           </div>
@@ -61,13 +76,92 @@ export default function Home() {
                 <li className="flex gap-2"><span>✨</span> Acabamento Top + Pneus</li>
               </ul>
             </div>
-            <button className="w-full bg-red-50 hover:bg-red-100 text-red-700 font-bold py-3 rounded-lg transition-colors">
+            <button 
+              onClick={() => setServicoSelecionado({ nome: "Lavagem Premium (Moto)", preco: 50 })}
+              className="w-full bg-red-50 hover:bg-red-100 text-red-700 font-bold py-3 rounded-lg transition-colors"
+            >
               Abrir OS
             </button>
           </div>
 
         </div>
       </section>
+
+      {/* OVERLAY E MODAL DE NOVA OS */}
+      {servicoSelecionado && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          
+          {/* Caixa do Modal */}
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Nova Ordem de Serviço</h2>
+                <p className="text-sm font-medium text-slate-500 mt-1">
+                  Serviço: <span className="text-red-600 font-bold">{servicoSelecionado.nome}</span> - R$ {servicoSelecionado.preco}
+                </p>
+              </div>
+              <button onClick={fecharModal} className="text-slate-400 hover:text-slate-700 p-1">
+                ✕
+              </button>
+            </div>
+
+            <form 
+              className="space-y-4" 
+              onSubmit={(e) => { 
+                e.preventDefault(); 
+                alert(`OS de ${servicoSelecionado.nome} registrada com sucesso!`); 
+                fecharModal(); 
+              }}
+            >
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Placa do Veículo *</label>
+                <input
+                  type="text"
+                  className="w-full border border-slate-300 rounded-lg p-3 uppercase font-medium focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+                  placeholder="ABC-1234"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Nome do Cliente *</label>
+                <input
+                  type="text"
+                  className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+                  placeholder="Ex: João da Silva"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">WhatsApp (Opcional)</label>
+                <input
+                  type="tel"
+                  className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={fecharModal}
+                  className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors shadow-lg shadow-red-600/30"
+                >
+                  Confirmar OS
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
