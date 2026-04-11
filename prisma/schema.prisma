@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model OrdemServico {
+  id        String   @id @default(cuid())
+  placa     String
+  cliente   String
+  servico   String
+  preco     Float
+  status    String   @default("fila") // Pode ser: 'fila', 'lavando', 'finalizado'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
