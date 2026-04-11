@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type StatusOS = 'fila' | 'lavando' | 'finalizado';
 
 type OrdemServico = {
-  id: number;
+  id: string; // Mudou para string por causa do Prisma
   placa: string;
   cliente: string;
   servico: string;
@@ -15,12 +15,29 @@ type OrdemServico = {
 
 export default function Home() {
   const [abaAtiva, setAbaAtiva] = useState<'novo' | 'patio' | 'caixa'>('novo');
-
   const [servicoSelecionado, setServicoSelecionado] = useState<{nome: string, preco: number} | null>(null);
   const [placaInput, setPlacaInput] = useState("");
   const [clienteInput, setClienteInput] = useState("");
-
+  
   const [ordens, setOrdens] = useState<OrdemServico[]>([]);
+  const [carregando, setCarregando] = useState(true);
+
+  // BUSCA AS ORDENS NO BANCO DE DADOS AO CARREGAR A TELA
+  useEffect(() => {
+    carregarOrdens();
+  }, []);
+
+  const carregarOrdens = async () => {
+    try {
+      const res = await fetch('/api/ordens');
+      const data = await res.json();
+      setOrdens(data);
+    } catch (error) {
+      console.error("Erro ao carregar ordens", error);
+    } finally {
+      setCarregando(false);
+    }
+  };
 
   const fecharModal = () => {
     setServicoSelecionado(null);
@@ -28,26 +45,51 @@ export default function Home() {
     setClienteInput("");
   };
 
-  const gerarOS = (e: React.FormEvent) => {
+  const gerarOS = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!servicoSelecionado) return;
 
-    const novaOS: OrdemServico = {
-      id: Date.now(),
+    const novaOSData = {
       placa: placaInput.toUpperCase(),
       cliente: clienteInput,
       servico: servicoSelecionado.nome,
       preco: servicoSelecionado.preco,
-      status: 'fila',
     };
 
-    setOrdens([...ordens, novaOS]);
-    fecharModal();
-    setAbaAtiva('patio');
+    try {
+      // Manda para o banco de dados
+      const res = await fetch('/api/ordens', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novaOSData),
+      });
+
+      const osCriada = await res.json();
+      
+      // Atualiza a tela com a OS que o banco devolveu
+      setOrdens([osCriada, ...ordens]); 
+      fecharModal();
+      setAbaAtiva('patio');
+    } catch (error) {
+      alert("Erro ao criar OS no banco de dados.");
+    }
   };
 
-  const alterarStatus = (id: number, novoStatus: StatusOS) => {
+  const alterarStatus = async (id: string, novoStatus: StatusOS) => {
+    // Atualiza a tela imediatamente (Optimistic UI) para não parecer lento pro usuário
     setOrdens(ordens.map(os => os.id === id ? { ...os, status: novoStatus } : os));
+
+    try {
+      // Manda a atualização pro banco no "fundo"
+      await fetch(`/api/ordens/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: novoStatus }),
+      });
+    } catch (error) {
+      alert("Erro ao atualizar o status!");
+      carregarOrdens(); // Se falhar no banco, recarrega a página pra garantir a verdade
+    }
   };
 
   const avisarCliente = (cliente: string, placa: string) => {
@@ -55,39 +97,27 @@ export default function Home() {
     window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
   };
 
-  // Lógica do Caixa: Filtra apenas os finalizados e soma os valores
   const ordensFinalizadas = ordens.filter(os => os.status === 'finalizado');
   const faturamentoTotal = ordensFinalizadas.reduce((total, os) => total + os.preco, 0);
+
+  // Exibe um carregamento simples enquanto busca no banco
+  if (carregando) {
+    return <div className="flex h-screen items-center justify-center font-bold text-slate-500">Carregando o sistema...</div>;
+  }
 
   return (
     <div className="space-y-6 relative pb-10">
       
       {/* Navegação por Abas */}
       <div className="flex bg-slate-200 p-1 rounded-xl shadow-inner max-w-lg mx-auto mb-8 overflow-x-auto">
-        <button 
-          onClick={() => setAbaAtiva('novo')}
-          className={`flex-1 min-w-[120px] py-3 text-sm font-bold rounded-lg transition-all ${abaAtiva === 'novo' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          ➕ Novo Serviço
-        </button>
-        <button 
-          onClick={() => setAbaAtiva('patio')}
-          className={`flex-1 min-w-[120px] py-3 text-sm font-bold rounded-lg transition-all ${abaAtiva === 'patio' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          📋 Pátio ({ordens.filter(os => os.status !== 'finalizado').length})
-        </button>
-        <button 
-          onClick={() => setAbaAtiva('caixa')}
-          className={`flex-1 min-w-[120px] py-3 text-sm font-bold rounded-lg transition-all ${abaAtiva === 'caixa' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          💰 Caixa (R$ {faturamentoTotal})
-        </button>
+        <button onClick={() => setAbaAtiva('novo')} className={`flex-1 min-w-[120px] py-3 text-sm font-bold rounded-lg transition-all ${abaAtiva === 'novo' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>➕ Novo Serviço</button>
+        <button onClick={() => setAbaAtiva('patio')} className={`flex-1 min-w-[120px] py-3 text-sm font-bold rounded-lg transition-all ${abaAtiva === 'patio' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>📋 Pátio ({ordens.filter(os => os.status !== 'finalizado').length})</button>
+        <button onClick={() => setAbaAtiva('caixa')} className={`flex-1 min-w-[120px] py-3 text-sm font-bold rounded-lg transition-all ${abaAtiva === 'caixa' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>💰 Caixa (R$ {faturamentoTotal})</button>
       </div>
 
       {/* ABA 1: NOVO SERVIÇO */}
       {abaAtiva === 'novo' && (
         <div className="space-y-12 animate-in fade-in duration-300">
-           {/* (O conteúdo dos cards de Moto e Carro continua idêntico aqui) */}
            <section>
             <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-l-4 border-red-600 pl-3">🏍️ Serviços de Moto</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -152,31 +182,21 @@ export default function Home() {
             <h1 className="text-2xl font-extrabold text-slate-900 uppercase tracking-tight">Controle de Pátio</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {/* Coluna: Na Fila */}
             <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[500px]">
-              <h3 className="font-black text-slate-700 mb-4 flex items-center gap-2 uppercase text-sm tracking-wider">
-                <span className="w-3 h-3 rounded-full bg-slate-400"></span> Na Fila
-              </h3>
+              <h3 className="font-black text-slate-700 mb-4 flex items-center gap-2 uppercase text-sm tracking-wider"><span className="w-3 h-3 rounded-full bg-slate-400"></span> Na Fila</h3>
               <div className="space-y-4">
                 {ordens.filter(os => os.status === 'fila').map(os => (
                   <div key={os.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <p className="text-xs font-bold text-slate-400 uppercase">{os.servico}</p>
                     <h4 className="text-xl font-black text-slate-900 my-1">{os.placa}</h4>
                     <p className="text-sm text-slate-600 mb-4">👤 {os.cliente}</p>
-                    <button onClick={() => alterarStatus(os.id, 'lavando')} className="w-full bg-blue-50 text-blue-700 font-bold py-2 rounded-lg hover:bg-blue-100 transition-colors text-sm">
-                      Iniciar Lavagem ➔
-                    </button>
+                    <button onClick={() => alterarStatus(os.id, 'lavando')} className="w-full bg-blue-50 text-blue-700 font-bold py-2 rounded-lg hover:bg-blue-100 transition-colors text-sm">Iniciar Lavagem ➔</button>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* Coluna: Lavando */}
             <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100 min-h-[500px]">
-              <h3 className="font-black text-blue-800 mb-4 flex items-center gap-2 uppercase text-sm tracking-wider">
-                <span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></span> Lavando
-              </h3>
+              <h3 className="font-black text-blue-800 mb-4 flex items-center gap-2 uppercase text-sm tracking-wider"><span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></span> Lavando</h3>
               <div className="space-y-4">
                 {ordens.filter(os => os.status === 'lavando').map(os => (
                   <div key={os.id} className="bg-white p-4 rounded-xl shadow-sm border border-blue-200">
@@ -191,26 +211,19 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
-            {/* Coluna: Finalizado */}
             <div className="bg-green-50 p-4 rounded-2xl border border-green-100 min-h-[500px]">
-              <h3 className="font-black text-green-800 mb-4 flex items-center gap-2 uppercase text-sm tracking-wider">
-                <span className="w-3 h-3 rounded-full bg-green-500"></span> Finalizado
-              </h3>
+              <h3 className="font-black text-green-800 mb-4 flex items-center gap-2 uppercase text-sm tracking-wider"><span className="w-3 h-3 rounded-full bg-green-500"></span> Finalizado</h3>
               <div className="space-y-4">
                 {ordens.filter(os => os.status === 'finalizado').map(os => (
                   <div key={os.id} className="bg-white p-4 rounded-xl shadow-sm border border-green-200">
                     <p className="text-xs font-bold text-green-500 uppercase">{os.servico}</p>
                     <h4 className="text-xl font-black text-slate-900 my-1">{os.placa}</h4>
                     <p className="text-sm text-slate-600 mb-4">👤 {os.cliente}</p>
-                    <button onClick={() => avisarCliente(os.cliente, os.placa)} className="w-full bg-[#25D366] text-white font-bold py-2 rounded-lg hover:bg-[#1ebe5d] transition-colors text-sm flex items-center justify-center gap-2">
-                      📱 Avisar no WhatsApp
-                    </button>
+                    <button onClick={() => avisarCliente(os.cliente, os.placa)} className="w-full bg-[#25D366] text-white font-bold py-2 rounded-lg hover:bg-[#1ebe5d] transition-colors text-sm flex items-center justify-center gap-2">📱 Avisar no WhatsApp</button>
                   </div>
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       )}
@@ -223,10 +236,8 @@ export default function Home() {
             <h2 className="text-6xl font-black text-green-400">R$ {faturamentoTotal}</h2>
             <p className="text-slate-500 mt-4 text-sm">{ordensFinalizadas.length} veículos finalizados</p>
           </div>
-
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
             <h3 className="font-bold text-slate-800 mb-4 text-lg border-b border-slate-100 pb-4">Histórico de Hoje</h3>
-            
             {ordensFinalizadas.length === 0 ? (
               <p className="text-slate-400 text-center py-8">Nenhum serviço finalizado ainda.</p>
             ) : (
@@ -237,9 +248,7 @@ export default function Home() {
                       <h4 className="font-bold text-slate-900">{os.placa}</h4>
                       <p className="text-xs text-slate-500">{os.servico}</p>
                     </div>
-                    <div className="font-black text-slate-800">
-                      R$ {os.preco}
-                    </div>
+                    <div className="font-black text-slate-800">R$ {os.preco}</div>
                   </div>
                 ))}
               </div>
@@ -248,21 +257,17 @@ export default function Home() {
         </div>
       )}
 
-      {/* MODAL DE NOVA OS (mantido) */}
+      {/* MODAL DE NOVA OS */}
       {servicoSelecionado && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl border-t-8 border-red-600 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-2xl font-black text-slate-900 uppercase">Confirmar Entrada</h2>
-                <div className="mt-2 inline-block bg-slate-100 px-3 py-1 rounded text-sm">
-                  <span className="font-bold text-slate-700">{servicoSelecionado.nome}</span>
-                  <span className="ml-2 text-red-600 font-black">R$ {servicoSelecionado.preco}</span>
-                </div>
+                <div className="mt-2 inline-block bg-slate-100 px-3 py-1 rounded text-sm"><span className="font-bold text-slate-700">{servicoSelecionado.nome}</span><span className="ml-2 text-red-600 font-black">R$ {servicoSelecionado.preco}</span></div>
               </div>
               <button onClick={fecharModal} className="text-slate-400 hover:text-slate-900 text-2xl">✕</button>
             </div>
-
             <form className="space-y-5" onSubmit={gerarOS}>
               <div>
                 <label className="block text-xs font-black text-slate-500 uppercase mb-1">Placa *</label>

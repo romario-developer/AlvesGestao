@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma'; // Importa a conexão que criamos
 
+// AVISA AO NEXT.JS PARA NÃO FAZER CACHE DESTA ROTA
+export const dynamic = 'force-dynamic';
+
 // BUSCAR TODAS AS ORDENS (Quando carregar a página)
 export async function GET() {
   try {
